@@ -12,7 +12,7 @@ After installing these extensions, simply clone this repository and open the fol
 
 Now you can use the following commands:
 - ```CMake: Build``` - to build the executable (do this first)
-- ```CMake: Run Without Debugging``` - to run the executable (shortcut F5)
+- ```CMake: Run Without Debugging``` - to run the executable (shortcut Shift+F5)
 - ```CMake: Debug``` - to run the project with debugging (shortcut Ctrl+F5)
 
 If all goes well, you should see the game in action.
