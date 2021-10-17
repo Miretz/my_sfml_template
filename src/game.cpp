@@ -9,9 +9,12 @@
 
 Game::Game()
 {
-    m_window.create(sf::VideoMode(m_windowWidth, m_windowHeight), "Followers!", sf::Style::Fullscreen);
+    m_window.create(sf::VideoMode::getDesktopMode(), "Followers!", sf::Style::Fullscreen);
     m_window.setFramerateLimit(500);
     m_window.setVerticalSyncEnabled(true);
+
+    m_windowWidth = m_window.getSize().x;
+    m_windowHeight = m_window.getSize().y;
 
     //load shader
     m_lightShader.loadFromFile(m_shaderFile, sf::Shader::Fragment);
