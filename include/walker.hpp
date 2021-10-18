@@ -12,7 +12,7 @@ class Walker
 {
 public:
     Walker(float mX, float mY);
-    virtual ~Walker() = default;
+    ~Walker() = default;
 
     static void changeStrenght();
     void update(float ft, sf::RenderWindow &window);

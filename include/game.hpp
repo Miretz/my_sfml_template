@@ -23,10 +23,9 @@ class Game
 {
 public:
     Game();
-    virtual ~Game() = default;
+    ~Game() = default;
     void run();
 
-protected:
 private:
     Menu mainMenu_;
     Menu exitConfirmationMenu_;
