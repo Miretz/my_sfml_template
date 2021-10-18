@@ -39,6 +39,7 @@ set(SOURCES
     src/random_generator.cpp
     src/walker.cpp
     src/main.cpp
+    src/menu.cpp
 )
 
 add_executable(game ${SOURCES})
@@ -50,6 +51,7 @@ target_link_libraries(
 	sfml-graphics
     sfml-system
     sfml-window
+    ${FREETYPE_LIBRARY}/freetype.lib
 )
 
 add_custom_command(TARGET game POST_BUILD

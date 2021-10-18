@@ -23,3 +23,6 @@ SpaceBeforeRangeBasedForLoopColon: 'true'
 SpaceInEmptyBlock: 'true'
 Standard: 'Latest'
 AccessModifierOffset: -4
+AllowShortLambdasOnASingleLine: Inline
+BraceWrapping:
+  BeforeLambdaBody: 'false'

@@ -6,7 +6,6 @@
 
 #include "SFML/Graphics/Shader.hpp"
 
-
 Game::Game()
 {
     m_window.create(sf::VideoMode::getDesktopMode(), "Followers!", sf::Style::Fullscreen);
@@ -16,7 +15,38 @@ Game::Game()
     m_windowWidth = m_window.getSize().x;
     m_windowHeight = m_window.getSize().y;
 
-    //load shader
+    auto goInGame = [&]()
+    {
+        m_gameState = GameState::IN_GAME;
+    };
+    auto goMainMenu = [&]()
+    {
+        m_gameState = GameState::MAIN_MENU;
+    };
+    auto goExitMenu = [&]()
+    {
+        m_gameState = GameState::EXIT_CONFIRMATION;
+    };
+    auto quit = [&]()
+    {
+        m_running = false;
+    };
+
+    m_mainMenu.initialize(
+        20.f, 20.f, "My SFML Game", {
+                                        { "New Game", goInGame },
+                                        { "Exit", goExitMenu },
+                                    },
+        goExitMenu);
+
+    m_exitConfirmationMenu.initialize(
+        20.f, 20.f, "Are you sure?", {
+                                         { "Yes", quit },
+                                         { "No", goMainMenu },
+                                     },
+        goMainMenu);
+
+    // load shader
     m_lightShader.loadFromFile(m_shaderFile, sf::Shader::Fragment);
     m_lightShader.setUniform("frag_ScreenResolution", sf::Vector2f(static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight)));
 
@@ -45,7 +75,10 @@ void Game::run()
 
         auto time2(std::chrono::high_resolution_clock::now());
         auto elapsedTime(time2 - time1);
-        auto frameTime = std::chrono::duration_cast<std::chrono::duration<float, std::milli>>(elapsedTime).count();
+        auto frameTime =
+            std::chrono::duration_cast<std::chrono::duration<float, std::milli>>(
+                elapsedTime)
+                .count();
 
         m_lastTime = frameTime;
 
@@ -63,8 +96,6 @@ void Game::initializeWalkers()
     for (int a = 0; a < m_walkerCount; ++a)
     {
         m_walkers.emplace_back(m_window.getSize().x / 2.f, m_window.getSize().y / 2.f);
-        const auto& color = m_walkers[a].getColor();
-        m_vertices.push_back(sf::Vertex(m_walkers[a].getPosition(), sf::Color(sf::Uint8(color.x), sf::Uint8(color.y), sf::Uint8(color.z)), sf::Vector2f(100, 100)));
     }
 }
 
@@ -73,29 +104,47 @@ void Game::checkInput()
     sf::Event event;
     while (m_window.pollEvent(event))
     {
-        if (event.type == sf::Event::Closed)
+        const auto &mousePos = (sf::Vector2f)sf::Mouse::getPosition(m_window);
+
+        if (m_gameState == GameState::MAIN_MENU)
         {
-            m_running = false;
+            m_mainMenu.handleInput(event, mousePos);
         }
-        else if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape))
+        else if (m_gameState == GameState::EXIT_CONFIRMATION)
         {
-            m_running = false;
+            m_exitConfirmationMenu.handleInput(event, mousePos);
         }
-        else if (event.type == sf::Event::MouseButtonPressed)
+        else if (m_gameState == GameState::IN_GAME)
         {
-            Walker::changeStrenght();
+            if (event.type == sf::Event::Closed)
+            {
+                m_running = false;
+            }
+            else if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape))
+            {
+                m_gameState = GameState::MAIN_MENU;
+            }
+            else if (event.type == sf::Event::MouseButtonPressed)
+            {
+                Walker::changeStrenght();
+            }
         }
     }
 }
 
 void Game::update()
 {
+    if (m_gameState != GameState::IN_GAME)
+    {
+        return;
+    }
+
     m_currentSlice += m_lastTime;
 
-    //update multiple times based on fps
+    // update multiple times based on fps
     for (; m_currentSlice >= m_timeSlice; m_currentSlice -= m_timeSlice)
     {
-        for (auto& walker : m_walkers)
+        for (auto &walker : m_walkers)
         {
             walker.update(m_timeStep, m_window);
         }
@@ -104,10 +153,19 @@ void Game::update()
 
 void Game::draw()
 {
+    if (m_gameState == GameState::MAIN_MENU)
+    {
+        m_mainMenu.draw(m_window);
+        return;
+    }
+    else if (m_gameState == GameState::EXIT_CONFIRMATION)
+    {
+        m_exitConfirmationMenu.draw(m_window);
+        return;
+    }
+
     for (int a = 0; a < m_walkerCount; ++a)
     {
-        m_vertices[a].position = m_walkers[a].getPosition();
-
         m_walkers[a].draw(m_renderTexture);
 
         m_lightShader.setUniform("frag_LightOrigin", m_walkers[a].getPosition());
@@ -120,8 +178,6 @@ void Game::draw()
 
         m_renderTexture.draw(m_spriteWorld, states);
     }
-
-    m_renderTexture.draw(&m_vertices[0], m_vertices.size(), sf::LinesStrip);
 
     m_renderTexture.display();
     m_window.draw(m_spriteWorld);
