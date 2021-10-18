@@ -8,66 +8,66 @@
 
 Game::Game()
 {
-    m_window.create(sf::VideoMode::getDesktopMode(), "Followers!", sf::Style::Fullscreen);
-    m_window.setFramerateLimit(500);
-    m_window.setVerticalSyncEnabled(true);
+    window_.create(sf::VideoMode::getDesktopMode(), "Followers!", sf::Style::Fullscreen);
+    window_.setFramerateLimit(500);
+    window_.setVerticalSyncEnabled(true);
 
-    m_windowWidth = m_window.getSize().x;
-    m_windowHeight = m_window.getSize().y;
+    windowWidth_ = window_.getSize().x;
+    windowHeight_ = window_.getSize().y;
 
     auto goInGame = [&]()
     {
-        m_gameState = GameState::IN_GAME;
+        gameState_ = GameState::IN_GAME;
     };
     auto goMainMenu = [&]()
     {
-        m_gameState = GameState::MAIN_MENU;
+        gameState_ = GameState::MAIN_MENU;
     };
     auto goExitMenu = [&]()
     {
-        m_gameState = GameState::EXIT_CONFIRMATION;
+        gameState_ = GameState::EXIT_CONFIRMATION;
     };
     auto quit = [&]()
     {
-        m_running = false;
+        running_ = false;
     };
 
-    m_mainMenu.initialize(
-        20.f, 20.f, "My SFML Game", {
-                                        { "New Game", goInGame },
-                                        { "Exit", goExitMenu },
-                                    },
+    mainMenu_.initialize(
+        kMenuX, kMenuY, "My SFML Game", {
+                                            { "New Game", goInGame },
+                                            { "Exit", goExitMenu },
+                                        },
         goExitMenu);
 
-    m_exitConfirmationMenu.initialize(
-        20.f, 20.f, "Are you sure?", {
-                                         { "Yes", quit },
-                                         { "No", goMainMenu },
-                                     },
+    exitConfirmationMenu_.initialize(
+        kMenuX, kMenuY, "Are you sure?", {
+                                             { "Yes", quit },
+                                             { "No", goMainMenu },
+                                         },
         goMainMenu);
 
     // load shader
-    m_lightShader.loadFromFile(m_shaderFile, sf::Shader::Fragment);
-    m_lightShader.setUniform("frag_ScreenResolution", sf::Vector2f(static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight)));
+    lightShader_.loadFromFile(kShaderFile, sf::Shader::Fragment);
+    lightShader_.setUniform("frag_ScreenResolution", sf::Vector2f(static_cast<float>(windowWidth_), static_cast<float>(windowHeight_)));
 
     initializeWalkers();
 }
 
 void Game::run()
 {
-    m_renderTexture.create(m_windowWidth, m_windowHeight);
-    m_spriteWorld.setTexture(m_renderTexture.getTexture());
-    m_spriteWorld.setOrigin(m_spriteWorld.getTextureRect().width / 2.f, m_spriteWorld.getTextureRect().height / 2.f);
-    m_spriteWorld.setPosition(static_cast<float>(m_windowWidth) / 2.f, static_cast<float>(m_windowHeight) / 2.f);
+    renderTexture_.create(windowWidth_, windowHeight_);
+    spriteWorld_.setTexture(renderTexture_.getTexture());
+    spriteWorld_.setOrigin(spriteWorld_.getTextureRect().width / 2.f, spriteWorld_.getTextureRect().height / 2.f);
+    spriteWorld_.setPosition(static_cast<float>(windowWidth_) / 2.f, static_cast<float>(windowHeight_) / 2.f);
 
-    m_running = true;
+    running_ = true;
 
-    while (m_running)
+    while (running_)
     {
         auto time1(std::chrono::high_resolution_clock::now());
 
-        m_window.clear(sf::Color::Black);
-        m_renderTexture.clear();
+        window_.clear(sf::Color::Black);
+        renderTexture_.clear();
 
         checkInput();
         update();
@@ -80,49 +80,48 @@ void Game::run()
                 elapsedTime)
                 .count();
 
-        m_lastTime = frameTime;
+        lastTime_ = frameTime;
 
-        auto ftSeconds(m_lastTime / 1000.f);
+        auto ftSeconds(lastTime_ / 1000.f);
         if (ftSeconds > 0.f)
         {
-            auto fps(1.f / ftSeconds);
-            m_window.setTitle("FT: " + std::to_string(frameTime) + "\tFPS: " + std::to_string(fps));
+            window_.setTitle("FT: " + std::to_string(frameTime) + "\tFPS: " + std::to_string(1.f / ftSeconds));
         }
     }
 }
 
 void Game::initializeWalkers()
 {
-    for (int a = 0; a < m_walkerCount; ++a)
+    for (int a = 0; a < kWalkerCount; ++a)
     {
-        m_walkers.emplace_back(m_window.getSize().x / 2.f, m_window.getSize().y / 2.f);
+        walkers_.emplace_back(window_.getSize().x / 2.f, window_.getSize().y / 2.f);
     }
 }
 
 void Game::checkInput()
 {
     sf::Event event;
-    while (m_window.pollEvent(event))
+    while (window_.pollEvent(event))
     {
-        const auto &mousePos = (sf::Vector2f)sf::Mouse::getPosition(m_window);
+        const auto &mousePos = (sf::Vector2f)sf::Mouse::getPosition(window_);
 
-        if (m_gameState == GameState::MAIN_MENU)
+        if (gameState_ == GameState::MAIN_MENU)
         {
-            m_mainMenu.handleInput(event, mousePos);
+            mainMenu_.handleInput(event, mousePos);
         }
-        else if (m_gameState == GameState::EXIT_CONFIRMATION)
+        else if (gameState_ == GameState::EXIT_CONFIRMATION)
         {
-            m_exitConfirmationMenu.handleInput(event, mousePos);
+            exitConfirmationMenu_.handleInput(event, mousePos);
         }
-        else if (m_gameState == GameState::IN_GAME)
+        else if (gameState_ == GameState::IN_GAME)
         {
             if (event.type == sf::Event::Closed)
             {
-                m_running = false;
+                running_ = false;
             }
             else if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape))
             {
-                m_gameState = GameState::MAIN_MENU;
+                gameState_ = GameState::MAIN_MENU;
             }
             else if (event.type == sf::Event::MouseButtonPressed)
             {
@@ -134,52 +133,52 @@ void Game::checkInput()
 
 void Game::update()
 {
-    if (m_gameState != GameState::IN_GAME)
+    if (gameState_ != GameState::IN_GAME)
     {
         return;
     }
 
-    m_currentSlice += m_lastTime;
+    currentSlice_ += lastTime_;
 
     // update multiple times based on fps
-    for (; m_currentSlice >= m_timeSlice; m_currentSlice -= m_timeSlice)
+    for (; currentSlice_ >= kTimeSlice; currentSlice_ -= kTimeSlice)
     {
-        for (auto &walker : m_walkers)
+        for (auto &walker : walkers_)
         {
-            walker.update(m_timeStep, m_window);
+            walker.update(kTimeStep, window_);
         }
     }
 }
 
 void Game::draw()
 {
-    if (m_gameState == GameState::MAIN_MENU)
+    if (gameState_ == GameState::MAIN_MENU)
     {
-        m_mainMenu.draw(m_window);
+        mainMenu_.draw(window_);
         return;
     }
-    else if (m_gameState == GameState::EXIT_CONFIRMATION)
+    else if (gameState_ == GameState::EXIT_CONFIRMATION)
     {
-        m_exitConfirmationMenu.draw(m_window);
+        exitConfirmationMenu_.draw(window_);
         return;
     }
 
-    for (int a = 0; a < m_walkerCount; ++a)
+    for (auto &walker : walkers_)
     {
-        m_walkers[a].draw(m_renderTexture);
+        walker.draw(renderTexture_);
 
-        m_lightShader.setUniform("frag_LightOrigin", m_walkers[a].getPosition());
-        m_lightShader.setUniform("frag_LightColor", m_walkers[a].getColor());
-        m_lightShader.setUniform("frag_LightAttenuation", 40.f);
+        lightShader_.setUniform("frag_LightOrigin", walker.getPosition());
+        lightShader_.setUniform("frag_LightColor", walker.getColor());
+        lightShader_.setUniform("frag_LightAttenuation", 40.f);
 
         sf::RenderStates states;
-        states.shader = &m_lightShader;
+        states.shader = &lightShader_;
         states.blendMode = sf::BlendAdd;
 
-        m_renderTexture.draw(m_spriteWorld, states);
+        renderTexture_.draw(spriteWorld_, states);
     }
 
-    m_renderTexture.display();
-    m_window.draw(m_spriteWorld);
-    m_window.display();
+    renderTexture_.display();
+    window_.draw(spriteWorld_);
+    window_.display();
 }

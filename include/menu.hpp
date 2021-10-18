@@ -7,6 +7,11 @@
 
 using MenuItems = std::vector<std::pair<std::string, std::function<void()>>>;
 
+constexpr auto kFontPath = "assets/fonts/OtherF.ttf";
+constexpr float kMenuPadding = 20.0f;
+constexpr float kMenuItemHeight = 30.0f;
+constexpr int kTitleHeight = 100;
+
 class Menu
 {
 public:
@@ -18,17 +23,12 @@ public:
     void handleInput(const sf::Event& event, const sf::Vector2f& mousePosition);
 
 private:
-    sf::Font m_font;
-    std::vector<sf::Text> m_menuItems;
-    std::vector<std::function<void()>> m_callbacks;
-    std::function<void()> m_exitCallback;
-    sf::Text m_titleText;
-    sf::Vector2f m_mousePos;
+    sf::Font font_;
+    std::vector<sf::Text> menuItems_;
+    std::vector<std::function<void()>> callbacks_;
+    std::function<void()> exitCallback_;
+    sf::Text titleText_;
+    sf::Vector2f mousePosition_;
 
-    const std::string m_fontPath = "assets/fonts/OtherF.ttf";
-
-    const float m_padding = 20.0f;
-    const float m_itemHeight = 30.0f;
-
-    unsigned int m_mouseOverIndex = 0;
+    unsigned int selectedIndex_ = 0;
 };

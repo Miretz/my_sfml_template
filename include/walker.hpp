@@ -4,12 +4,13 @@
 
 #include "random_generator.hpp"
 
+constexpr float kWalkerWidth = 6.f;
+constexpr float kWalkerHeight = 6.f;
+constexpr float kMaxWalkerVelocity = 1.f;
+
 class Walker
 {
 public:
-    static int sSelected;
-    static RandomGenerator gen;
-
     Walker(float mX, float mY);
     virtual ~Walker() = default;
 
@@ -23,17 +24,15 @@ public:
     float top() const noexcept;
     float bottom() const noexcept;
 
-protected:
 private:
-    float m_walkerWidth = 6.f;
-    float m_walkerHeight = 6.f;
-    float m_walkerVelocity = 1.f;
+    static int sSelected;
+    static RandomGenerator sGen;
 
-    float m_strenghts[2];
+    float strenghts_[2];
 
-    sf::RectangleShape m_shape;
-    sf::Vector2f m_velocity;
-    sf::Vector3f m_color;
+    sf::RectangleShape shape_;
+    sf::Vector2f velocity_;
+    sf::Vector3f color_;
 
     void generateRandomColor();
     int generateRandomChance();

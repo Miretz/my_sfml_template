@@ -12,6 +12,13 @@ enum class GameState
     EXIT_CONFIRMATION,
 };
 
+constexpr float kTimeStep = 1.f;
+constexpr float kTimeSlice = 1.f;
+constexpr auto kShaderFile = "assets/shaders/light_shader.frag";
+constexpr float kMenuX = 20.f;
+constexpr float kMenuY = 20.f;
+constexpr int kWalkerCount = 15;
+
 class Game
 {
 public:
@@ -21,29 +28,25 @@ public:
 
 protected:
 private:
-    Menu m_mainMenu;
-    Menu m_exitConfirmationMenu;
+    Menu mainMenu_;
+    Menu exitConfirmationMenu_;
 
-    const float m_timeStep = 1.f;
-    const float m_timeSlice = 1.f;
-    float m_lastTime = 0.f;
-    float m_currentSlice = 0.f;
+    float lastTime_ = 0.f;
+    float currentSlice_ = 0.f;
 
-    unsigned int m_windowWidth = 800;
-    unsigned int m_windowHeight = 600;
-    int m_walkerCount = 15;
+    unsigned int windowWidth_ = 800;
+    unsigned int windowHeight_ = 600;
 
-    const std::string m_shaderFile = "assets/shaders/light_shader.frag";
-    sf::Shader m_lightShader;
+    sf::Shader lightShader_;
 
-    bool m_running = false;
-    GameState m_gameState = GameState::MAIN_MENU;
+    bool running_ = false;
+    GameState gameState_ = GameState::MAIN_MENU;
 
-    sf::RenderWindow m_window;
-    sf::RenderTexture m_renderTexture;
-    sf::Sprite m_spriteWorld;
+    sf::RenderWindow window_;
+    sf::RenderTexture renderTexture_;
+    sf::Sprite spriteWorld_;
 
-    std::vector<Walker> m_walkers;
+    std::vector<Walker> walkers_;
 
 private:
     void initializeWalkers();

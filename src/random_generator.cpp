@@ -8,7 +8,7 @@ float RandomGenerator::randomFloat(float min, float max)
         if (max < 0.f)
         {
             std::uniform_real_distribution<float> rFloat{ std::abs(min), std::abs(max) };
-            return rFloat(m_gen) * -1;
+            return rFloat(gen_) * -1;
         }
         else
         {
@@ -18,11 +18,11 @@ float RandomGenerator::randomFloat(float min, float max)
         }
     }
     std::uniform_real_distribution<float> rFloat{ min, max };
-    return rFloat(m_gen) - lessThanZero;
+    return rFloat(gen_) - lessThanZero;
 }
 
 bool RandomGenerator::randomChance(float chance)
 {
     std::bernoulli_distribution rChance{ chance };
-    return rChance(m_gen);
+    return rChance(gen_);
 }

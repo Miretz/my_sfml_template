@@ -5,7 +5,7 @@
 class RandomGenerator
 {
 private:
-    std::mt19937 m_gen{ std::random_device{}() };
+    std::mt19937 gen_{ std::random_device{}() };
 
 public:
     RandomGenerator() = default;
