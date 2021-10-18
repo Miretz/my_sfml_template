@@ -76,20 +76,25 @@ void Menu::handleInput(const sf::Event& event, const sf::Vector2f& mousePosition
 {
     m_mousePos = mousePosition;
 
-    if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape))
+    const auto keyPressed = event.type == sf::Event::KeyPressed;
+    const auto mousePressed = event.type == sf::Event::MouseButtonPressed;
+    const auto keyCode = event.key.code;
+    const auto mouseButton = event.mouseButton.button;
+
+    if (keyPressed && (keyCode == sf::Keyboard::Escape))
     {
         m_exitCallback();
     }
-    else if (((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Return)) || ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left)))
+    else if ((keyPressed && (keyCode == sf::Keyboard::Return)) || (mousePressed && (mouseButton == sf::Mouse::Left)))
     {
         m_callbacks[m_mouseOverIndex]();
     }
     //enable menu selection using arrow keys
-    else if ((event.type == sf::Event::KeyPressed) && ((event.key.code == sf::Keyboard::Down) || (event.key.code == sf::Keyboard::S)) && (m_mouseOverIndex < m_menuItems.size() - 1))
+    else if (keyPressed && ((keyCode == sf::Keyboard::Down) || (keyCode == sf::Keyboard::S)) && (m_mouseOverIndex < m_menuItems.size() - 1))
     {
         m_mouseOverIndex++;
     }
-    else if ((event.type == sf::Event::KeyPressed) && ((event.key.code == sf::Keyboard::Up) || (event.key.code == sf::Keyboard::W)) && (m_mouseOverIndex > 0))
+    else if (keyPressed && ((keyCode == sf::Keyboard::Up) || (keyCode == sf::Keyboard::W)) && (m_mouseOverIndex > 0))
     {
         m_mouseOverIndex--;
     }
