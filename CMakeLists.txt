@@ -4,11 +4,28 @@ project(my_sfml_template VERSION 0.1.0)
 include(FetchContent)
 
 set(BUILD_SHARED_LIBS OFF)
+# set(SFML_BUILD_AUDIO OFF)
+
+# to use Clang under Windows
+# might want to tweak this on other platforms
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    if(WIN32)
+        set(FREETYPE_LIBRARY ${CMAKE_BINARY_DIR}/_deps/sfml-src/extlibs/libs-msvc/x64/)
+        set(OPENAL_LIBRARY ${CMAKE_BINARY_DIR}/_deps/sfml-src/extlibs/libs-msvc/x64/)
+        set(OGG_LIBRARY ${CMAKE_BINARY_DIR}/_deps/sfml-src/extlibs/libs-msvc/x64/)
+        set(FLAC_LIBRARY ${CMAKE_BINARY_DIR}/_deps/sfml-src/extlibs/libs-msvc/x64/)
+        set(VORBIS_LIBRARY ${CMAKE_BINARY_DIR}/_deps/sfml-src/extlibs/libs-msvc/x64/)
+        set(VORBISENC_LIBRARY ${CMAKE_BINARY_DIR}/_deps/sfml-src/extlibs/libs-msvc/x64/)
+        set(VORBISFILE_LIBRARY ${CMAKE_BINARY_DIR}/_deps/sfml-src/extlibs/libs-msvc/x64/)
+    endif()    
+endif()
+
 FetchContent_Declare(
 	SFML
 	GIT_REPOSITORY https://github.com/SFML/SFML.git
 	GIT_TAG 2.5.1
 )
+
 FetchContent_MakeAvailable(SFML)
 
 set(CMAKE_CXX_STANDARD 17)
