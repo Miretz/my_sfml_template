@@ -18,7 +18,12 @@ public:
     Menu() = default;
     ~Menu() = default;
 
-    void initialize(const float x, const float y, const std::string& title, const MenuItems& menuItems, const std::function<void()> exitCallback);
+    void initialize(
+        const float x,
+        const float y,
+        const std::string& title,
+        const MenuItems& menuItems,
+        const std::function<void()> exitCallback);
     void draw(sf::RenderWindow& window);
     void handleInput(const sf::Event& event, const sf::Vector2f& mousePosition);
 

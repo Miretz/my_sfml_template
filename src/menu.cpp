@@ -1,6 +1,11 @@
 #include "menu.hpp"
 
-void Menu::initialize(const float x, const float y, const std::string& title, const MenuItems& menuItems, const std::function<void()> exitCallback)
+void Menu::initialize(
+    const float x,
+    const float y,
+    const std::string& title,
+    const MenuItems& menuItems,
+    const std::function<void()> exitCallback)
 {
     font_.loadFromFile(kFontPath);
     exitCallback_ = exitCallback;
@@ -40,12 +45,10 @@ void Menu::draw(sf::RenderWindow& window)
     {
         auto& item = menuItems_[i];
         const sf::FloatRect boundingBox = item.getGlobalBounds();
-        const sf::FloatRect boundsWithPadding{
-            boundingBox.left - kMenuPadding / 2.0f,
-            boundingBox.top - kMenuPadding / 2.0f,
-            boundingBox.width + kMenuPadding,
-            boundingBox.height + kMenuPadding
-        };
+        const sf::FloatRect boundsWithPadding{ boundingBox.left - kMenuPadding / 2.0f,
+                                               boundingBox.top - kMenuPadding / 2.0f,
+                                               boundingBox.width + kMenuPadding,
+                                               boundingBox.height + kMenuPadding };
 
         // draw selection box
         if (boundsWithPadding.contains(mousePosition_) || selectedIndex_ == i)
@@ -87,8 +90,10 @@ void Menu::handleInput(const sf::Event& event, const sf::Vector2f& mousePosition
     {
         callbacks_[selectedIndex_]();
     }
-    //enable menu selection using arrow keys
-    else if (keyPressed && ((keyCode == sf::Keyboard::Down) || (keyCode == sf::Keyboard::S)) && (selectedIndex_ < menuItems_.size() - 1))
+    // enable menu selection using arrow keys
+    else if (
+        keyPressed && ((keyCode == sf::Keyboard::Down) || (keyCode == sf::Keyboard::S)) &&
+        (selectedIndex_ < menuItems_.size() - 1))
     {
         selectedIndex_++;
     }

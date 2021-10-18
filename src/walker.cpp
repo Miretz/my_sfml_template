@@ -29,9 +29,8 @@ void Walker::update(float ft, sf::RenderWindow& window)
     const sf::Vector2f mousePosition = (sf::Vector2f)sf::Mouse::getPosition(window);
     const sf::Vector2u winSize = window.getSize();
 
-    //follow mouse if it is inside of the window
-    if (mousePosition.x > 0.f && mousePosition.y > 0.f &&
-        mousePosition.x < winSize.x && mousePosition.y < winSize.y)
+    // follow mouse if it is inside of the window
+    if (mousePosition.x > 0.f && mousePosition.y > 0.f && mousePosition.x < winSize.x && mousePosition.y < winSize.y)
     {
         sf::Vector2f direction = mousePosition - shape_.getPosition();
         normalize(direction);
@@ -42,7 +41,7 @@ void Walker::update(float ft, sf::RenderWindow& window)
 
         velocity_ += direction;
 
-        //clamp velocity
+        // clamp velocity
         velocity_.x = std::min(kMaxWalkerVelocity, velocity_.x);
         velocity_.y = std::min(kMaxWalkerVelocity, velocity_.y);
         velocity_.x = std::max(-kMaxWalkerVelocity, velocity_.x);
@@ -57,7 +56,7 @@ void Walker::update(float ft, sf::RenderWindow& window)
         }
     }
 
-    //guard edges of screen
+    // guard edges of screen
     if ((right() >= winSize.x && velocity_.x > 0) || (left() <= 0 && velocity_.x < 0))
     {
         velocity_.x = 0;

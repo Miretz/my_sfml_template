@@ -15,40 +15,35 @@ Game::Game()
     windowWidth_ = window_.getSize().x;
     windowHeight_ = window_.getSize().y;
 
-    auto goInGame = [&]()
-    {
-        gameState_ = GameState::IN_GAME;
-    };
-    auto goMainMenu = [&]()
-    {
-        gameState_ = GameState::MAIN_MENU;
-    };
-    auto goExitMenu = [&]()
-    {
-        gameState_ = GameState::EXIT_CONFIRMATION;
-    };
-    auto quit = [&]()
-    {
-        running_ = false;
-    };
+    auto goInGame = [&]() { gameState_ = GameState::IN_GAME; };
+    auto goMainMenu = [&]() { gameState_ = GameState::MAIN_MENU; };
+    auto goExitMenu = [&]() { gameState_ = GameState::EXIT_CONFIRMATION; };
+    auto quit = [&]() { running_ = false; };
 
     mainMenu_.initialize(
-        kMenuX, kMenuY, "My SFML Game", {
-                                            { "New Game", goInGame },
-                                            { "Exit", goExitMenu },
-                                        },
+        kMenuX,
+        kMenuY,
+        "My SFML Game",
+        {
+            { "New Game", goInGame },
+            { "Exit", goExitMenu },
+        },
         goExitMenu);
 
     exitConfirmationMenu_.initialize(
-        kMenuX, kMenuY, "Are you sure?", {
-                                             { "Yes", quit },
-                                             { "No", goMainMenu },
-                                         },
+        kMenuX,
+        kMenuY,
+        "Are you sure?",
+        {
+            { "Yes", quit },
+            { "No", goMainMenu },
+        },
         goMainMenu);
 
     // load shader
     lightShader_.loadFromFile(kShaderFile, sf::Shader::Fragment);
-    lightShader_.setUniform("frag_ScreenResolution", sf::Vector2f(static_cast<float>(windowWidth_), static_cast<float>(windowHeight_)));
+    lightShader_.setUniform(
+        "frag_ScreenResolution", sf::Vector2f(static_cast<float>(windowWidth_), static_cast<float>(windowHeight_)));
 
     initializeWalkers();
 }
@@ -75,10 +70,7 @@ void Game::run()
 
         auto time2(std::chrono::high_resolution_clock::now());
         auto elapsedTime(time2 - time1);
-        auto frameTime =
-            std::chrono::duration_cast<std::chrono::duration<float, std::milli>>(
-                elapsedTime)
-                .count();
+        auto frameTime = std::chrono::duration_cast<std::chrono::duration<float, std::milli>>(elapsedTime).count();
 
         lastTime_ = frameTime;
 
