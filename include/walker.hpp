@@ -15,8 +15,8 @@ public:
     Walker(float mX, float mY);
 
     static void changeStrenght();
-    void update(float ft, sf::RenderWindow &window);
-    void draw(sf::RenderTarget &target);
+    void update(const float ft, const sf::RenderWindow &window);
+    void draw(sf::RenderTarget &target) const noexcept;
     sf::Vector2f getPosition() const noexcept;
     sf::Vector3f getColor() const noexcept;
     float left() const noexcept;
@@ -33,7 +33,7 @@ private:
     sf::Vector3f color_;
 
     void generateRandomColor();
-    int generateRandomChance();
-    float generateVelocityFloat();
-    void normalize(sf::Vector2f &source);
+    int generateRandomChance() const noexcept;
+    float generateVelocityFloat() const noexcept;
+    void normalize(sf::Vector2f &source) const noexcept;
 };

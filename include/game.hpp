@@ -23,9 +23,9 @@ constexpr unsigned int kDefaultWindowHeight = 600;
 constexpr auto kGameTitle = "Followers!";
 constexpr int kFramerateLimit = 500;
 
-constexpr auto kMainMenuId = 0;
-constexpr auto kOptionsMenuId = 1;
-constexpr auto kExitMenuId = 2;
+constexpr size_t kMainMenuId = 0;
+constexpr size_t kOptionsMenuId = 1;
+constexpr size_t kExitMenuId = 2;
 
 class Game
 {
@@ -35,7 +35,7 @@ public:
 
 private:
     std::vector<Menu> menus_;
-    int currentMenuId_ = kMainMenuId;
+    size_t currentMenuId_ = kMainMenuId;
 
     float lastTime_ = 0.f;
     float currentSlice_ = 0.f;

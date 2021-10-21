@@ -20,7 +20,7 @@ public:
         const float y,
         const std::string& title,
         const MenuItems& menuItems,
-        const std::function<void()> exitCallback);
+        const std::function<void()>& exitCallback);
     void draw(sf::RenderWindow& window);
     void handleInput(const sf::Event& event, const sf::Vector2f& mousePosition);
 
@@ -32,5 +32,5 @@ private:
     sf::Text titleText_;
     sf::Vector2f mousePosition_;
 
-    unsigned int selectedIndex_ = 0;
+    size_t selectedIndex_ = 0;
 };

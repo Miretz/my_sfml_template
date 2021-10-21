@@ -18,7 +18,7 @@ void Game::run()
 {
     renderTexture_.create(window_.getSize().x, window_.getSize().y);
     spriteWorld_.setTexture(renderTexture_.getTexture());
-    spriteWorld_.setOrigin(spriteWorld_.getTextureRect().width / 2.f, spriteWorld_.getTextureRect().height / 2.f);
+    spriteWorld_.setOrigin(static_cast<float>(spriteWorld_.getTextureRect().width) / 2.f, static_cast<float>(spriteWorld_.getTextureRect().height) / 2.f);
     spriteWorld_.setPosition(static_cast<float>(window_.getSize().x) / 2.f, static_cast<float>(window_.getSize().y) / 2.f);
 
     isRunning_ = true;
@@ -40,7 +40,7 @@ void Game::run()
 
         lastTime_ = frameTime;
 
-        auto ftSeconds(lastTime_ / 1000.f);
+        const auto ftSeconds = lastTime_ / 1000.f;
         if (ftSeconds > 0.f)
         {
             window_.setTitle("FT: " + std::to_string(frameTime) + "\tFPS: " + std::to_string(1.f / ftSeconds));
@@ -105,7 +105,7 @@ void Game::draw()
         return;
     }
 
-    for (auto &walker : walkers_)
+    for (const auto &walker : walkers_)
     {
         walker.draw(renderTexture_);
 
@@ -194,6 +194,6 @@ void Game::initializeWalkers()
 {
     for (int a = 0; a < kWalkerCount; ++a)
     {
-        walkers_.emplace_back(window_.getSize().x / 2.f, window_.getSize().y / 2.f);
+        walkers_.emplace_back(static_cast<float>(window_.getSize().x) / 2.f, static_cast<float>(window_.getSize().y) / 2.f);
     }
 }

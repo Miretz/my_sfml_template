@@ -5,7 +5,7 @@ void Menu::initialize(
     const float y,
     const std::string& title,
     const MenuItems& menuItems,
-    const std::function<void()> exitCallback)
+    const std::function<void()>& exitCallback)
 {
     font_.loadFromFile(kFontPath);
     exitCallback_ = exitCallback;
@@ -19,11 +19,11 @@ void Menu::initialize(
     // Menu Items
     auto offset = y + kTitleHeight + kMenuPadding * 2;
 
-    for (const auto& param : menuItems)
+    for (const auto& [name, func] : menuItems)
     {
         sf::Text item;
         item.setFont(font_);
-        item.setString(param.first);
+        item.setString(name);
         item.setCharacterSize(30);
         item.setPosition(x, offset);
         item.setFillColor(sf::Color::White);
@@ -31,7 +31,7 @@ void Menu::initialize(
         offset += kMenuItemHeight + kMenuPadding;
 
         menuItems_.push_back(item);
-        callbacks_.push_back(param.second);
+        callbacks_.push_back(func);
     }
 }
 
@@ -53,7 +53,7 @@ void Menu::draw(sf::RenderWindow& window)
         // draw selection box
         if (boundsWithPadding.contains(mousePosition_) || selectedIndex_ == i)
         {
-            selectedIndex_ = static_cast<int>(i);
+            selectedIndex_ = i;
 
             item.setFillColor(sf::Color::Yellow);
 

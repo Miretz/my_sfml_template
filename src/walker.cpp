@@ -21,10 +21,10 @@ void Walker::changeStrenght()
     sSelected = (sSelected == 0) ? 1 : 0;
 }
 
-void Walker::update(float ft, sf::RenderWindow& window)
+void Walker::update(const float ft, const sf::RenderWindow& window)
 {
-    const sf::Vector2f mousePosition = (sf::Vector2f)sf::Mouse::getPosition(window);
-    const sf::Vector2u winSize = window.getSize();
+    const auto mousePosition = (sf::Vector2f)sf::Mouse::getPosition(window);
+    const auto winSize = static_cast<sf::Vector2f>(window.getSize());
 
     // follow mouse if it is inside of the window
     if (mousePosition.x > 0.f && mousePosition.y > 0.f && mousePosition.x < winSize.x && mousePosition.y < winSize.y)
@@ -66,7 +66,7 @@ void Walker::update(float ft, sf::RenderWindow& window)
     shape_.move(velocity_ * ft);
 }
 
-void Walker::draw(sf::RenderTarget& target)
+void Walker::draw(sf::RenderTarget& target) const noexcept
 {
     target.draw(shape_);
 }
@@ -109,17 +109,17 @@ void Walker::generateRandomColor()
     color_ = sf::Vector3f(r, g, b);
 }
 
-int Walker::generateRandomChance()
+int Walker::generateRandomChance() const noexcept
 {
     return sGen.randomChance(0.002f);
 }
 
-float Walker::generateVelocityFloat()
+float Walker::generateVelocityFloat() const noexcept
 {
     return sGen.randomFloat(-kMaxWalkerVelocity, kMaxWalkerVelocity);
 }
 
-void Walker::normalize(sf::Vector2f& source)
+void Walker::normalize(sf::Vector2f& source) const noexcept
 {
     const float length = std::sqrt((source.x * source.x) + (source.y * source.y));
     if (length != 0.0f)
