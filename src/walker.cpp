@@ -9,9 +9,6 @@ Walker::Walker(float mX, float mY)
 {
     generateRandomColor();
 
-    strenghts_[0] = 0.004f;
-    strenghts_[1] = 0.0005f;
-
     shape_.setPosition(mX, mY);
     shape_.setSize({ kWalkerWidth, kWalkerHeight });
     shape_.setFillColor(

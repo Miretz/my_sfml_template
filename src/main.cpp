@@ -2,6 +2,8 @@
 
 int main()
 {
-    Game().run();
+    Game game;
+    game.initialize();
+    game.run();
     return EXIT_SUCCESS;
 }

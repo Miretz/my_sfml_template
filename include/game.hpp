@@ -22,8 +22,7 @@ constexpr int kWalkerCount = 15;
 class Game
 {
 public:
-    Game();
-    ~Game() = default;
+    void initialize();
     void run();
 
 private:

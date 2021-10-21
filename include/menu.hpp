@@ -15,9 +15,6 @@ constexpr int kTitleHeight = 100;
 class Menu
 {
 public:
-    Menu() = default;
-    ~Menu() = default;
-
     void initialize(
         const float x,
         const float y,

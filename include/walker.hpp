@@ -7,12 +7,12 @@
 constexpr float kWalkerWidth = 6.f;
 constexpr float kWalkerHeight = 6.f;
 constexpr float kMaxWalkerVelocity = 1.f;
+constexpr float strenghts_[2] = { 0.004f, 0.0005f };
 
 class Walker
 {
 public:
     Walker(float mX, float mY);
-    ~Walker() = default;
 
     static void changeStrenght();
     void update(float ft, sf::RenderWindow &window);
@@ -27,8 +27,6 @@ public:
 private:
     static int sSelected;
     static RandomGenerator sGen;
-
-    float strenghts_[2];
 
     sf::RectangleShape shape_;
     sf::Vector2f velocity_;

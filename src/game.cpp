@@ -6,7 +6,7 @@
 
 #include "SFML/Graphics/Shader.hpp"
 
-Game::Game()
+void Game::initialize()
 {
     window_.create(sf::VideoMode::getDesktopMode(), "Followers!", sf::Style::Fullscreen);
     window_.setFramerateLimit(500);
