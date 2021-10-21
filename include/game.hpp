@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <map>
 
 #include "menu.hpp"
 #include "walker.hpp"
@@ -8,8 +9,7 @@
 enum class GameState
 {
     IN_GAME,
-    MAIN_MENU,
-    EXIT_CONFIRMATION,
+    IN_MENU,
 };
 
 constexpr float kTimeStep = 1.f;
@@ -18,6 +18,14 @@ constexpr auto kShaderFile = "assets/shaders/light_shader.frag";
 constexpr float kMenuX = 20.f;
 constexpr float kMenuY = 20.f;
 constexpr int kWalkerCount = 15;
+constexpr unsigned int kDefaultWindowWidth = 800;
+constexpr unsigned int kDefaultWindowHeight = 600;
+constexpr auto kGameTitle = "Followers!";
+constexpr int kFramerateLimit = 500;
+
+constexpr auto kMainMenuId = 0;
+constexpr auto kOptionsMenuId = 1;
+constexpr auto kExitMenuId = 2;
 
 class Game
 {
@@ -26,28 +34,31 @@ public:
     void run();
 
 private:
-    Menu mainMenu_;
-    Menu exitConfirmationMenu_;
+    std::vector<Menu> menus_;
+    int currentMenuId_ = kMainMenuId;
 
     float lastTime_ = 0.f;
     float currentSlice_ = 0.f;
 
-    unsigned int windowWidth_ = 800;
-    unsigned int windowHeight_ = 600;
-
     sf::Shader lightShader_;
 
-    bool running_ = false;
-    GameState gameState_ = GameState::MAIN_MENU;
+    bool isRunning_ = false;
+    bool isFullscreen_ = true;
+
+    GameState gameState_ = GameState::IN_MENU;
 
     sf::RenderWindow window_;
+    sf::RenderStates states_;
     sf::RenderTexture renderTexture_;
     sf::Sprite spriteWorld_;
 
     std::vector<Walker> walkers_;
 
 private:
+    void initializeWindow();
+    void initializeMenus();
     void initializeWalkers();
+    void initializeShader();
     void checkInput();
     void update();
     void draw();

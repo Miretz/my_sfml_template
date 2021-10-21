@@ -111,7 +111,7 @@ void Walker::generateRandomColor()
 
 int Walker::generateRandomChance()
 {
-    return sGen.randomChance(0.02f);
+    return sGen.randomChance(0.002f);
 }
 
 float Walker::generateVelocityFloat()

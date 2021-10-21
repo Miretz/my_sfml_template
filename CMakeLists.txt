@@ -42,6 +42,7 @@ set(SOURCES
     src/menu.cpp
 )
 
+set(CMAKE_CXX_CPPCHECK "cppcheck")
 add_executable(game ${SOURCES})
 
 target_include_directories(game PUBLIC include)
@@ -51,8 +52,16 @@ target_link_libraries(
 	sfml-graphics
     sfml-system
     sfml-window
-    ${FREETYPE_LIBRARY}/freetype.lib
+    
 )
+
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    if(WIN32)
+    target_link_libraries(
+        game
+        ${FREETYPE_LIBRARY}/freetype.lib)
+    endif()    
+endif()
 
 add_custom_command(TARGET game POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_directory

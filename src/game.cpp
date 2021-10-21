@@ -8,56 +8,22 @@
 
 void Game::initialize()
 {
-    window_.create(sf::VideoMode::getDesktopMode(), "Followers!", sf::Style::Fullscreen);
-    window_.setFramerateLimit(500);
-    window_.setVerticalSyncEnabled(true);
-
-    windowWidth_ = window_.getSize().x;
-    windowHeight_ = window_.getSize().y;
-
-    auto goInGame = [&]() { gameState_ = GameState::IN_GAME; };
-    auto goMainMenu = [&]() { gameState_ = GameState::MAIN_MENU; };
-    auto goExitMenu = [&]() { gameState_ = GameState::EXIT_CONFIRMATION; };
-    auto quit = [&]() { running_ = false; };
-
-    mainMenu_.initialize(
-        kMenuX,
-        kMenuY,
-        "My SFML Game",
-        {
-            { "New Game", goInGame },
-            { "Exit", goExitMenu },
-        },
-        goExitMenu);
-
-    exitConfirmationMenu_.initialize(
-        kMenuX,
-        kMenuY,
-        "Are you sure?",
-        {
-            { "Yes", quit },
-            { "No", goMainMenu },
-        },
-        goMainMenu);
-
-    // load shader
-    lightShader_.loadFromFile(kShaderFile, sf::Shader::Fragment);
-    lightShader_.setUniform(
-        "frag_ScreenResolution", sf::Vector2f(static_cast<float>(windowWidth_), static_cast<float>(windowHeight_)));
-
+    initializeWindow();
+    initializeMenus();
     initializeWalkers();
+    initializeShader();
 }
 
 void Game::run()
 {
-    renderTexture_.create(windowWidth_, windowHeight_);
+    renderTexture_.create(window_.getSize().x, window_.getSize().y);
     spriteWorld_.setTexture(renderTexture_.getTexture());
     spriteWorld_.setOrigin(spriteWorld_.getTextureRect().width / 2.f, spriteWorld_.getTextureRect().height / 2.f);
-    spriteWorld_.setPosition(static_cast<float>(windowWidth_) / 2.f, static_cast<float>(windowHeight_) / 2.f);
+    spriteWorld_.setPosition(static_cast<float>(window_.getSize().x) / 2.f, static_cast<float>(window_.getSize().y) / 2.f);
 
-    running_ = true;
+    isRunning_ = true;
 
-    while (running_)
+    while (isRunning_)
     {
         auto time1(std::chrono::high_resolution_clock::now());
 
@@ -82,14 +48,6 @@ void Game::run()
     }
 }
 
-void Game::initializeWalkers()
-{
-    for (int a = 0; a < kWalkerCount; ++a)
-    {
-        walkers_.emplace_back(window_.getSize().x / 2.f, window_.getSize().y / 2.f);
-    }
-}
-
 void Game::checkInput()
 {
     sf::Event event;
@@ -97,28 +55,25 @@ void Game::checkInput()
     {
         const auto &mousePos = (sf::Vector2f)sf::Mouse::getPosition(window_);
 
-        if (gameState_ == GameState::MAIN_MENU)
-        {
-            mainMenu_.handleInput(event, mousePos);
-        }
-        else if (gameState_ == GameState::EXIT_CONFIRMATION)
-        {
-            exitConfirmationMenu_.handleInput(event, mousePos);
-        }
-        else if (gameState_ == GameState::IN_GAME)
+        if (gameState_ == GameState::IN_GAME)
         {
             if (event.type == sf::Event::Closed)
             {
-                running_ = false;
+                isRunning_ = false;
             }
             else if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape))
             {
-                gameState_ = GameState::MAIN_MENU;
+                currentMenuId_ = kMainMenuId;
+                gameState_ = GameState::IN_MENU;
             }
             else if (event.type == sf::Event::MouseButtonPressed)
             {
                 Walker::changeStrenght();
             }
+        }
+        else
+        {
+            menus_[currentMenuId_].handleInput(event, mousePos);
         }
     }
 }
@@ -144,14 +99,9 @@ void Game::update()
 
 void Game::draw()
 {
-    if (gameState_ == GameState::MAIN_MENU)
+    if (gameState_ != GameState::IN_GAME)
     {
-        mainMenu_.draw(window_);
-        return;
-    }
-    else if (gameState_ == GameState::EXIT_CONFIRMATION)
-    {
-        exitConfirmationMenu_.draw(window_);
+        menus_[currentMenuId_].draw(window_);
         return;
     }
 
@@ -163,14 +113,87 @@ void Game::draw()
         lightShader_.setUniform("frag_LightColor", walker.getColor());
         lightShader_.setUniform("frag_LightAttenuation", 40.f);
 
-        sf::RenderStates states;
-        states.shader = &lightShader_;
-        states.blendMode = sf::BlendAdd;
-
-        renderTexture_.draw(spriteWorld_, states);
+        renderTexture_.draw(spriteWorld_, states_);
     }
 
     renderTexture_.display();
     window_.draw(spriteWorld_);
     window_.display();
+}
+
+void Game::initializeWindow()
+{
+    if (window_.isOpen())
+    {
+        window_.close();
+    }
+
+    if (isFullscreen_)
+    {
+        window_.create(sf::VideoMode::getDesktopMode(), kGameTitle, sf::Style::Fullscreen);
+    }
+    else
+    {
+        window_.create(sf::VideoMode(kDefaultWindowWidth, kDefaultWindowHeight), kGameTitle, sf::Style::Close);
+    }
+    window_.setFramerateLimit(kFramerateLimit);
+    window_.setVerticalSyncEnabled(true);
+}
+
+void Game::initializeShader()
+{
+    lightShader_.loadFromFile(kShaderFile, sf::Shader::Fragment);
+    lightShader_.setUniform(
+        "frag_ScreenResolution",
+        sf::Vector2f(static_cast<float>(window_.getSize().x), static_cast<float>(window_.getSize().y)));
+    states_.shader = &lightShader_;
+    states_.blendMode = sf::BlendAdd;
+}
+
+void Game::initializeMenus()
+{
+    menus_.resize(3);
+    menus_[kMainMenuId].initialize(
+        kMenuX,
+        kMenuY,
+        "My SFML Game",
+        {
+            { "New Game", [this]() { gameState_ = GameState::IN_GAME; } },
+            { "Options", [this]() { currentMenuId_ = kOptionsMenuId; } },
+            { "Exit", [this]() { currentMenuId_ = kExitMenuId; } },
+        },
+        [this]() { currentMenuId_ = kExitMenuId; });
+
+    menus_[kOptionsMenuId].initialize(
+        kMenuX,
+        kMenuY,
+        "Options",
+        {
+            { "Toggle Fullscreen",
+              [this]()
+              {
+                  isFullscreen_ = !isFullscreen_;
+                  initializeWindow();
+              } },
+            { "Back", [this]() { currentMenuId_ = kMainMenuId; } },
+        },
+        [this]() { currentMenuId_ = kMainMenuId; });
+
+    menus_[kExitMenuId].initialize(
+        kMenuX,
+        kMenuY,
+        "Are you sure?",
+        {
+            { "Yes", [this]() { isRunning_ = false; } },
+            { "No", [this]() { currentMenuId_ = kMainMenuId; } },
+        },
+        [this]() { currentMenuId_ = kMainMenuId; });
+}
+
+void Game::initializeWalkers()
+{
+    for (int a = 0; a < kWalkerCount; ++a)
+    {
+        walkers_.emplace_back(window_.getSize().x / 2.f, window_.getSize().y / 2.f);
+    }
 }
