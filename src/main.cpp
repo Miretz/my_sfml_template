@@ -1,6 +1,6 @@
 #include "game.hpp"
 
-int main()
+auto main() -> int
 {
     Game game;
     game.initialize();

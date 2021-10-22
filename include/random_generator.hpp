@@ -5,8 +5,8 @@
 class RandomGenerator
 {
 public:
-    bool randomChance(float chance);
-    float randomFloat(float min, float max);
+    auto randomChance(float chance) -> bool;
+    auto randomFloat(float min, float max) -> float;
 
 private:
     std::mt19937 gen_{ std::random_device{}() };

@@ -1,13 +1,17 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <array>
 
 #include "random_generator.hpp"
 
 constexpr float kWalkerWidth = 6.f;
 constexpr float kWalkerHeight = 6.f;
 constexpr float kMaxWalkerVelocity = 1.f;
-constexpr float strenghts_[2] = { 0.004f, 0.0005f };
+constexpr std::array<float, 2> kStrenghts_{ { 0.004f, 0.0005f } };
+constexpr auto kRandomChance = 0.002f;
+constexpr auto kVelocityModifier = 0.05f;
+constexpr auto kDivideBy = 2.f;
 
 class Walker
 {
@@ -17,23 +21,23 @@ public:
     static void changeStrenght();
     void update(const float ft, const sf::RenderWindow &window);
     void draw(sf::RenderTarget &target) const noexcept;
-    sf::Vector2f getPosition() const noexcept;
-    sf::Vector3f getColor() const noexcept;
-    float left() const noexcept;
-    float right() const noexcept;
-    float top() const noexcept;
-    float bottom() const noexcept;
+    auto getPosition() const noexcept -> sf::Vector2f;
+    auto getColor() const noexcept -> sf::Vector3f;
+    auto left() const noexcept -> float;
+    auto right() const noexcept -> float;
+    auto top() const noexcept -> float;
+    auto bottom() const noexcept -> float;
 
 private:
-    static int sSelected;
-    static RandomGenerator sGen;
+    inline static int sSelected = 0;                         // NOLINT
+    inline static RandomGenerator sGen = RandomGenerator();  // NOLINT
 
     sf::RectangleShape shape_;
     sf::Vector2f velocity_;
     sf::Vector3f color_;
 
     void generateRandomColor();
-    int generateRandomChance() const noexcept;
-    float generateVelocityFloat() const noexcept;
+    auto generateRandomChance() const noexcept -> int;
+    auto generateVelocityFloat() const noexcept -> float;
     void normalize(sf::Vector2f &source) const noexcept;
 };

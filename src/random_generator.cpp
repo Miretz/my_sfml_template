@@ -1,6 +1,6 @@
 #include "random_generator.hpp"
 
-float RandomGenerator::randomFloat(float min, float max)
+auto RandomGenerator::randomFloat(float min, float max) -> float
 {
     float lessThanZero = 0.f;
     if (min < 0.f)
@@ -21,7 +21,7 @@ float RandomGenerator::randomFloat(float min, float max)
     return rFloat(gen_) - lessThanZero;
 }
 
-bool RandomGenerator::randomChance(float chance)
+auto RandomGenerator::randomChance(float chance) -> bool
 {
     std::bernoulli_distribution rChance{ chance };
     return rChance(gen_);

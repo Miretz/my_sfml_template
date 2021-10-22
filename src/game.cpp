@@ -18,8 +18,12 @@ void Game::run()
 {
     renderTexture_.create(window_.getSize().x, window_.getSize().y);
     spriteWorld_.setTexture(renderTexture_.getTexture());
-    spriteWorld_.setOrigin(static_cast<float>(spriteWorld_.getTextureRect().width) / 2.f, static_cast<float>(spriteWorld_.getTextureRect().height) / 2.f);
-    spriteWorld_.setPosition(static_cast<float>(window_.getSize().x) / 2.f, static_cast<float>(window_.getSize().y) / 2.f);
+    static constexpr auto divideBy = 2.f;
+    spriteWorld_.setOrigin(
+        static_cast<float>(spriteWorld_.getTextureRect().width) / divideBy,
+        static_cast<float>(spriteWorld_.getTextureRect().height) / divideBy);
+    spriteWorld_.setPosition(
+        static_cast<float>(window_.getSize().x) / divideBy, static_cast<float>(window_.getSize().y) / divideBy);
 
     isRunning_ = true;
 
@@ -50,10 +54,10 @@ void Game::run()
 
 void Game::checkInput()
 {
-    sf::Event event;
+    sf::Event event{};
     while (window_.pollEvent(event))
     {
-        const auto &mousePos = (sf::Vector2f)sf::Mouse::getPosition(window_);
+        const auto &mousePos = static_cast<sf::Vector2f>(sf::Mouse::getPosition(window_));
 
         if (gameState_ == GameState::IN_GAME)
         {
@@ -61,7 +65,7 @@ void Game::checkInput()
             {
                 isRunning_ = false;
             }
-            else if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape))
+            else if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape)) // NOLINT
             {
                 currentMenuId_ = kMainMenuId;
                 gameState_ = GameState::IN_MENU;
@@ -111,7 +115,7 @@ void Game::draw()
 
         lightShader_.setUniform("frag_LightOrigin", walker.getPosition());
         lightShader_.setUniform("frag_LightColor", walker.getColor());
-        lightShader_.setUniform("frag_LightAttenuation", 40.f);
+        lightShader_.setUniform("frag_LightAttenuation", kLightAttenuation);
 
         renderTexture_.draw(spriteWorld_, states_);
     }
@@ -192,8 +196,10 @@ void Game::initializeMenus()
 
 void Game::initializeWalkers()
 {
+    static constexpr auto divideBy = 2.f;
     for (int a = 0; a < kWalkerCount; ++a)
     {
-        walkers_.emplace_back(static_cast<float>(window_.getSize().x) / 2.f, static_cast<float>(window_.getSize().y) / 2.f);
+        walkers_.emplace_back(
+            static_cast<float>(window_.getSize().x) / divideBy, static_cast<float>(window_.getSize().y) / divideBy);
     }
 }

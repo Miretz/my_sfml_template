@@ -35,17 +35,25 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -ggdb -Wall -Wextra -Wshadow 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/)
 
 set(SOURCES
-    src/game.cpp
-    src/random_generator.cpp
-    src/walker.cpp
     src/main.cpp
+    
+    include/random_generator.hpp
+    src/random_generator.cpp
+
+    include/walker.hpp
+    src/walker.cpp
+    
+    include/menu.hpp
     src/menu.cpp
+
+    include/game.hpp
+    src/game.cpp
 )
 
 set(CMAKE_CXX_CPPCHECK "cppcheck")
 add_executable(game ${SOURCES})
 
-target_include_directories(game PUBLIC include)
+target_include_directories(game PRIVATE include)
 
 target_link_libraries(
 	game

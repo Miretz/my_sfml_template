@@ -2,9 +2,6 @@
 
 #include <cmath>
 
-int Walker::sSelected = 0;
-RandomGenerator Walker::sGen = RandomGenerator();
-
 Walker::Walker(float mX, float mY)
 {
     generateRandomColor();
@@ -13,17 +10,17 @@ Walker::Walker(float mX, float mY)
     shape_.setSize({ kWalkerWidth, kWalkerHeight });
     shape_.setFillColor(
         sf::Color(static_cast<sf::Uint8>(color_.x), static_cast<sf::Uint8>(color_.y), static_cast<sf::Uint8>(color_.z)));
-    shape_.setOrigin(kWalkerWidth / 2.0f, kWalkerHeight / 2.0f);
+    shape_.setOrigin(kWalkerWidth / kDivideBy, kWalkerHeight / kDivideBy);
 }
 
 void Walker::changeStrenght()
 {
-    sSelected = (sSelected == 0) ? 1 : 0;
+    Walker::sSelected = (Walker::sSelected == 0) ? 1 : 0;
 }
 
 void Walker::update(const float ft, const sf::RenderWindow& window)
 {
-    const auto mousePosition = (sf::Vector2f)sf::Mouse::getPosition(window);
+    const auto mousePosition = static_cast<sf::Vector2f>(sf::Mouse::getPosition(window));
     const auto winSize = static_cast<sf::Vector2f>(window.getSize());
 
     // follow mouse if it is inside of the window
@@ -32,9 +29,9 @@ void Walker::update(const float ft, const sf::RenderWindow& window)
         sf::Vector2f direction = mousePosition - shape_.getPosition();
         normalize(direction);
 
-        direction *= strenghts_[sSelected];
-        direction.x += generateVelocityFloat() * 0.05f;
-        direction.y += generateVelocityFloat() * 0.05f;
+        direction *= kStrenghts_[sSelected];  // NOLINT
+        direction.x += generateVelocityFloat() * kVelocityModifier;
+        direction.y += generateVelocityFloat() * kVelocityModifier;
 
         velocity_ += direction;
 
@@ -71,34 +68,34 @@ void Walker::draw(sf::RenderTarget& target) const noexcept
     target.draw(shape_);
 }
 
-sf::Vector2f Walker::getPosition() const noexcept
+auto Walker::getPosition() const noexcept -> sf::Vector2f
 {
     return shape_.getPosition();
 }
 
-sf::Vector3f Walker::getColor() const noexcept
+auto Walker::getColor() const noexcept -> sf::Vector3f
 {
     return color_;
 }
 
-float Walker::left() const noexcept
+auto Walker::left() const noexcept -> float
 {
-    return shape_.getPosition().x - shape_.getSize().x / 2.0f;
+    return shape_.getPosition().x - shape_.getSize().x / kDivideBy;
 }
 
-float Walker::right() const noexcept
+auto Walker::right() const noexcept -> float
 {
-    return shape_.getPosition().x + shape_.getSize().x / 2.0f;
+    return shape_.getPosition().x + shape_.getSize().x / kDivideBy;
 }
 
-float Walker::top() const noexcept
+auto Walker::top() const noexcept -> float
 {
-    return shape_.getPosition().y - shape_.getSize().y / 2.0f;
+    return shape_.getPosition().y - shape_.getSize().y / kDivideBy;
 }
 
-float Walker::bottom() const noexcept
+auto Walker::bottom() const noexcept -> float
 {
-    return shape_.getPosition().y + shape_.getSize().y / 2.0f;
+    return shape_.getPosition().y + shape_.getSize().y / kDivideBy;
 }
 
 void Walker::generateRandomColor()
@@ -109,12 +106,12 @@ void Walker::generateRandomColor()
     color_ = sf::Vector3f(r, g, b);
 }
 
-int Walker::generateRandomChance() const noexcept
+auto Walker::generateRandomChance() const noexcept -> int
 {
-    return sGen.randomChance(0.002f);
+    return sGen.randomChance(kRandomChance);
 }
 
-float Walker::generateVelocityFloat() const noexcept
+auto Walker::generateVelocityFloat() const noexcept -> float
 {
     return sGen.randomFloat(-kMaxWalkerVelocity, kMaxWalkerVelocity);
 }

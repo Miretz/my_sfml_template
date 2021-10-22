@@ -11,6 +11,7 @@ constexpr auto kFontPath = "assets/fonts/OtherF.ttf";
 constexpr float kMenuPadding = 20.0f;
 constexpr float kMenuItemHeight = 30.0f;
 constexpr int kTitleHeight = 100;
+constexpr int kCharacterSize = 30;
 
 class Menu
 {

@@ -1,4 +1,7 @@
 #include "menu.hpp"
+#include "SFML/Config.hpp"
+
+using sf::Uint8;
 
 void Menu::initialize(
     const float x,
@@ -24,7 +27,7 @@ void Menu::initialize(
         sf::Text item;
         item.setFont(font_);
         item.setString(name);
-        item.setCharacterSize(30);
+        item.setCharacterSize(kCharacterSize);
         item.setPosition(x, offset);
         item.setFillColor(sf::Color::White);
 
@@ -61,7 +64,8 @@ void Menu::draw(sf::RenderWindow& window)
             selector.setPosition(boundsWithPadding.left, boundsWithPadding.top);
             selector.setFillColor(sf::Color(0, 0, 0, 0));
             selector.setOutlineThickness(2);
-            selector.setOutlineColor(sf::Color(255, 255, 255, 255));
+            static constexpr Uint8 maxColorValue = 255;
+            selector.setOutlineColor(sf::Color(maxColorValue, maxColorValue, maxColorValue, maxColorValue));
             window.draw(selector);
         }
         else
@@ -79,8 +83,8 @@ void Menu::handleInput(const sf::Event& event, const sf::Vector2f& mousePosition
 
     const auto keyPressed = event.type == sf::Event::KeyPressed;
     const auto mousePressed = event.type == sf::Event::MouseButtonPressed;
-    const auto keyCode = event.key.code;
-    const auto mouseButton = event.mouseButton.button;
+    const auto keyCode = event.key.code; // NOLINT
+    const auto mouseButton = event.mouseButton.button; // NOLINT
 
     if (keyPressed && (keyCode == sf::Keyboard::Escape))
     {

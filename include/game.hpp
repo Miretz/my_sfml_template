@@ -22,6 +22,7 @@ constexpr unsigned int kDefaultWindowWidth = 800;
 constexpr unsigned int kDefaultWindowHeight = 600;
 constexpr auto kGameTitle = "Followers!";
 constexpr int kFramerateLimit = 500;
+constexpr auto kLightAttenuation = 40.f;
 
 constexpr size_t kMainMenuId = 0;
 constexpr size_t kOptionsMenuId = 1;
