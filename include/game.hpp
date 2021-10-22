@@ -6,27 +6,27 @@
 #include "menu.hpp"
 #include "walker.hpp"
 
+inline constexpr float kTimeStep = 1.f;
+inline constexpr float kTimeSlice = 1.f;
+inline constexpr auto kShaderFile = "assets/shaders/light_shader.frag";
+inline constexpr float kMenuX = 20.f;
+inline constexpr float kMenuY = 20.f;
+inline constexpr int kWalkerCount = 15;
+inline constexpr unsigned int kDefaultWindowWidth = 800;
+inline constexpr unsigned int kDefaultWindowHeight = 600;
+inline constexpr auto kGameTitle = "Followers!";
+inline constexpr int kFramerateLimit = 500;
+inline constexpr auto kLightAttenuation = 40.f;
+
+inline constexpr size_t kMainMenuId = 0;
+inline constexpr size_t kOptionsMenuId = 1;
+inline constexpr size_t kExitMenuId = 2;
+
 enum class GameState
 {
     IN_GAME,
     IN_MENU,
 };
-
-constexpr float kTimeStep = 1.f;
-constexpr float kTimeSlice = 1.f;
-constexpr auto kShaderFile = "assets/shaders/light_shader.frag";
-constexpr float kMenuX = 20.f;
-constexpr float kMenuY = 20.f;
-constexpr int kWalkerCount = 15;
-constexpr unsigned int kDefaultWindowWidth = 800;
-constexpr unsigned int kDefaultWindowHeight = 600;
-constexpr auto kGameTitle = "Followers!";
-constexpr int kFramerateLimit = 500;
-constexpr auto kLightAttenuation = 40.f;
-
-constexpr size_t kMainMenuId = 0;
-constexpr size_t kOptionsMenuId = 1;
-constexpr size_t kExitMenuId = 2;
 
 class Game
 {

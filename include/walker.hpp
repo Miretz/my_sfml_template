@@ -5,13 +5,13 @@
 
 #include "random_generator.hpp"
 
-constexpr float kWalkerWidth = 6.f;
-constexpr float kWalkerHeight = 6.f;
-constexpr float kMaxWalkerVelocity = 1.f;
-constexpr std::array<float, 2> kStrenghts_{ { 0.004f, 0.0005f } };
-constexpr auto kRandomChance = 0.002f;
-constexpr auto kVelocityModifier = 0.05f;
-constexpr auto kDivideBy = 2.f;
+inline constexpr float kWalkerWidth = 6.f;
+inline constexpr float kWalkerHeight = 6.f;
+inline constexpr float kMaxWalkerVelocity = 1.f;
+inline constexpr std::array<float, 2> kStrenghts_{ { 0.004f, 0.0005f } };
+inline constexpr auto kRandomChance = 0.002f;
+inline constexpr auto kVelocityModifier = 0.05f;
+inline constexpr auto kDivideBy = 2.f;
 
 class Walker
 {

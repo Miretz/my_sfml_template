@@ -7,11 +7,11 @@
 
 using MenuItems = std::vector<std::pair<std::string, std::function<void()>>>;
 
-constexpr auto kFontPath = "assets/fonts/OtherF.ttf";
-constexpr float kMenuPadding = 20.0f;
-constexpr float kMenuItemHeight = 30.0f;
-constexpr int kTitleHeight = 100;
-constexpr int kCharacterSize = 30;
+inline constexpr auto kFontPath = "assets/fonts/OtherF.ttf";
+inline constexpr float kMenuPadding = 20.0f;
+inline constexpr float kMenuItemHeight = 30.0f;
+inline constexpr int kTitleHeight = 100;
+inline constexpr int kCharacterSize = 30;
 
 class Menu
 {
