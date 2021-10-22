@@ -11,6 +11,7 @@ I use [Visual Studio Code](https://code.visualstudio.com/) with the following ex
 - [SonarLint](https://www.sonarlint.org/vscode) - check for code quality & security issues
 
 After installing these extensions, simply clone this repository and open the folder in VSCode. CMake Tools should recognize the project.
+Copy the ```compile_commands.json``` file from ```build/``` to the parent directory.
 
 Now you can use the following commands:
 - ```CMake: Build``` - to build the executable (do this first)
@@ -22,5 +23,4 @@ If all goes well, you should see the "game" in action.
 \
 Tested on:
 - Windows 10 with MinGW & Clang
-- MacOS with GCC
-- Ubuntu with GCC
+- MacOS with GCC & Clang
