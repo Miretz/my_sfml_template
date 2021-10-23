@@ -1,7 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include <map>
+#include <vector>
 
 #include "menu.hpp"
 #include "walker.hpp"

@@ -77,7 +77,7 @@ void Game::checkInput()
         }
         else
         {
-            menus_[currentMenuId_].handleInput(event, mousePos);
+            menus_.at(currentMenuId_).handleInput(event, mousePos);
         }
     }
 }
@@ -105,7 +105,7 @@ void Game::draw()
 {
     if (gameState_ != GameState::IN_GAME)
     {
-        menus_[currentMenuId_].draw(window_);
+        menus_.at(currentMenuId_).draw(window_);
         return;
     }
 
