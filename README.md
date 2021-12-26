@@ -22,5 +22,5 @@ If all goes well, you should see the "game" in action.
 
 \
 Tested on:
-- Windows 10 with MinGW & Clang
+- Windows 10 with MinGW, Clang & Visual Studio 2022
 - MacOS with GCC & Clang
